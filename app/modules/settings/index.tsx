@@ -10,7 +10,7 @@ import { useCurrentUser, useToast } from '@md-shared/hooks'
 // components
 import { View } from 'react-native'
 import { Button, Text } from '@md-shared/components/ui'
-import { FormTextField, FromSelect } from '@md-shared/components'
+import { FormInput, FromSelect } from '@md-shared/components'
 // store
 import { updateProfileAction } from '@md-store/modules/profile'
 // utils
@@ -90,9 +90,9 @@ const Settings = () => {
         </Text>
       </Header>
 
-      <FormTextField label={'First Name'} name={'first_name'} control={control} />
-      <FormTextField label={'Last Name'} name={'last_name'} control={control} />
-      <FormTextField label={'Email'} name={'email'} control={control} />
+      <FormInput label={'First Name'} name={'first_name'} control={control} />
+      <FormInput label={'Last Name'} name={'last_name'} control={control} />
+      <FormInput label={'Email'} name={'email'} control={control} />
       <FromSelect label={'Job'} name={'job'} control={control} options={JOBS} placeholder={DEFAULT_PLACEHOLDER} />
       <Button text={'save'} onPress={handleSubmit(onFormSubmit)} isLoading={loading} />
     </View>

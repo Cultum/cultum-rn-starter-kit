@@ -2,11 +2,11 @@ import * as React from 'react'
 // libs
 import { Control, Controller } from 'react-hook-form'
 // components
-import { TextField, TextFieldProps } from '@md-shared/components'
+import { Input, InputProps } from '@md-shared/components'
 
 const WRAPPER_STYLE = { mb: 12 }
 
-export interface FormTextFieldProps extends TextFieldProps {
+export interface FormInputProps extends InputProps {
   name: string
   control: Control<any>
   defaultValue?: string
@@ -14,7 +14,7 @@ export interface FormTextFieldProps extends TextFieldProps {
   handleOnChange?: (value?: string) => void
 }
 
-const FormTextField: React.FC<FormTextFieldProps> = ({
+const FormInput: React.FC<FormInputProps> = ({
   name,
   control,
   defaultValue = '',
@@ -38,7 +38,7 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
       control={control}
       defaultValue={defaultValue}
       render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-        <TextField
+        <Input
           value={value}
           isInvalid={!!error}
           returnKeyType={'done'}
@@ -54,4 +54,4 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
   )
 }
 
-export { FormTextField }
+export { FormInput }

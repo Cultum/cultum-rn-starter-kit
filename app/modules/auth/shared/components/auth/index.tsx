@@ -10,7 +10,7 @@ import { useToast } from '@md-shared/hooks'
 import { useDispatch } from 'react-redux'
 // components
 import { AuthRedirect } from '@md-modules/auth/shared/components/auth-redirect'
-import { Button, Text, FormTextField } from '@md-shared/components'
+import { Button, Text, FormInput } from '@md-shared/components'
 // helpers
 import {
   ClientError,
@@ -104,8 +104,8 @@ const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNa
         <Text textStyle={HEADER_TEXT_STYLES} preset={'screenHeader'}>
           {isSignUp ? 'Sign Up' : 'Log In'}
         </Text>
-        <FormTextField control={control} label={'email'} name={'email'} />
-        <FormTextField control={control} label={'password'} name={'password'} secureTextEntry />
+        <FormInput control={control} label={'email'} name={'email'} />
+        <FormInput control={control} label={'password'} name={'password'} secureTextEntry />
         <Button
           isLoading={isLoading}
           buttonStyle={BUTTON_STYLES}

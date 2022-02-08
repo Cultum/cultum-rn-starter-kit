@@ -59,7 +59,6 @@ const Select: React.FC<SelectProps> = ({
       )}
       <PickerWrapper isValid={!isInvalid}>
         <Picker
-          {...rest}
           style={style}
           items={options}
           ref={selectRef}
@@ -68,6 +67,7 @@ const Select: React.FC<SelectProps> = ({
           placeholder={placeholder ?? {}}
           InputAccessoryView={() => null}
           onValueChange={handleOnSelectChange}
+          {...rest}
         />
       </PickerWrapper>
       <ErrorMessage errorText={errorText} />

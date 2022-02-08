@@ -8,7 +8,7 @@ import { Text, ErrorMessage } from '@md-shared/components'
 // views
 import { TextInput, IconWrapper, InnerWrapper, Wrapper, InputStyle, WrapperStyle } from './views'
 
-export interface TextFieldProps extends TextInputProps {
+export interface InputProps extends TextInputProps {
   icon?: React.ReactElement
   label?: string
   errorText?: string
@@ -19,7 +19,7 @@ export interface TextFieldProps extends TextInputProps {
   wrapperStyle?: WrapperStyle
 }
 
-const TextField: React.FC<TextFieldProps> = ({
+const Input: React.FC<InputProps> = ({
   icon,
   label,
   errorText,
@@ -49,4 +49,4 @@ const TextField: React.FC<TextFieldProps> = ({
   )
 }
 
-export { TextField }
+export { Input }

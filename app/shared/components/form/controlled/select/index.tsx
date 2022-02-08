@@ -20,12 +20,12 @@ const FromSelect: React.FC<Props> = ({ name, control, defaultValue = '', ...rest
       defaultValue={defaultValue}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <Select
-          {...rest}
           isInvalid={!!error}
           defaultValue={value}
           errorText={error?.message}
           wrapperStyle={WRAPPER_STYLE}
           onSelectChange={(value) => onChange(value)}
+          {...rest}
         />
       )}
     />
