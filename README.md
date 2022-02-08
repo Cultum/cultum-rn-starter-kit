@@ -8,20 +8,6 @@ This boilerplate currently includes.
 - TypeScript
 - Styled Components
 
-## How to use
-````
-npx react-native init <app-name> --template https://gitlab.com/cultum/rn-template.git
-
-cd <app-name>
-
-git init .
-git add .
-git commit -m "init"
-git remote add origin <repository url>
-git branch -M main
-git push -u origin main
-````
-
 ## Main commands
 
 - `yarn ios` - run ios app
