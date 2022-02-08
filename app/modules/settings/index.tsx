@@ -51,7 +51,7 @@ interface FormInputs {
 const schema = yup.object().shape({
   first_name: yup.string().required('Required'),
   last_name: yup.string().required('Required'),
-  email: yup.string().required('Required').nullable().email("E-mail isn't valid"),
+  email: yup.string().required('Required').nullable().email('E-mail isn\'t valid'),
   job: yup.string().required('Required'),
 })
 
@@ -86,7 +86,7 @@ const Settings = () => {
     <View>
       <Header>
         <Text textStyle={TEXT_STYLES} preset={'header'} overrides={TEXT_OVERRIDES}>
-          User Setting
+          Settings
         </Text>
       </Header>
 

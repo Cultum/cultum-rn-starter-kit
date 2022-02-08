@@ -37,7 +37,6 @@ const Wrapper = styled.View`
 `
 
 // constants
-const TEXT_STYLES = { mt: 12 }
 const BUTTON_STYLES = { mt: 20 }
 const HEADER_TEXT_STYLES = { align: 'center' as const, mb: 30 }
 
@@ -72,7 +71,7 @@ const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNa
   const onSubmit = async (data: FormInputs) => {
     Keyboard.dismiss()
 
-    const res = await onFormSubmit(data)
+    const res = await onFormSubmit({ password: data.password, email: 'byron.fields@reqres.in' })
 
     if (isClientSuccess(res)) {
       const { token } = res.data
@@ -112,10 +111,6 @@ const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNa
           onPress={handleSubmit(onSubmit)}
           text={isSignUp ? 'Sign Up' : 'Log In'}
         />
-
-        <Text preset='secondary' textStyle={TEXT_STYLES}>
-          For success {isSignUp ? 'register' : 'log in'} use: {'\n'}byron.fields@reqres.in - any 6 digits
-        </Text>
 
         <AuthRedirect isSignUp={isSignUp} onNavButtonPress={onNavButtonPress} />
       </Wrapper>
