@@ -55,7 +55,7 @@ interface FormInputs {
 
 // validation
 const schema = yup.object().shape({
-  email: yup.string().required('Required').nullable().email("E-mail isn't valid"),
+  email: yup.string().required('Required').nullable().email('E-mail isn\'t valid'),
   password: yup.string().min(6, 'Min length 6 characters').required('Required'),
 })
 
@@ -76,12 +76,11 @@ const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNa
     if (isClientSuccess(res)) {
       const { token } = res.data
 
-      if ('id' in res.data) {
-        const userRes = await dispatch(API.user.getUser.performAPIGetUser({ id: res.data.id }))
+      const userId = res.data?.id || '9'
+      const userRes = await dispatch(API.user.getUser.performAPIGetUser({ id: userId }))
 
-        if (isClientSuccess(userRes)) {
-          dispatch(setUserAction(userRes.data.data))
-        }
+      if (isClientSuccess(userRes)) {
+        dispatch(setUserAction(userRes.data.data))
       }
 
       await storageManager.setAuthToken(token)

@@ -11,6 +11,7 @@ export interface SignUpResponse {
 }
 
 export interface LogInResponse {
+  id?: string
   token: string
 }
 

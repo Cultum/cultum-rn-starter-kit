@@ -7,7 +7,7 @@ const REDUX_PERSIST = {
     key: 'primary',
     storage: AsyncStorage,
     // Reducer keys that you do NOT want stored to persistence here.
-    blacklist: ['api', 'ui', 'app'],
+    blacklist: ['api', 'ui', 'app', 'profile'],
   },
 }
 
