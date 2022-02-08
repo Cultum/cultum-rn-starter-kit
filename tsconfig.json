@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "jsx": "react-native",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "lib": ["esnext"],
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@md-shared": ["./app/shared"],
+      "@md-shared/*": ["./app/shared/*"],
+      "@md-modules": ["./app/modules"],
+      "@md-modules/*": ["./app/modules/*"],
+      "@md-screens": ["./app/screens"],
+      "@md-screens/*": ["./app/screens/*"],
+      "@md-navigation": ["./app/navigation"],
+      "@md-navigation/*": ["./app/navigation/*"],
+      "@md-storybook": ["./storybook"],
+      "@md-storybook/*": ["./storybook/*"],
+      "@md-store": ["./app/store"],
+      "@md-store/*": ["./app/store/*"],
+      "@md-assets/*": ["./assets/*"]
+    },
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "index.js",
+    "app",
+    "global.g.ts"
+  ]
+}
