@@ -1,6 +1,6 @@
 import * as React from 'react'
 // hooks
-import { useCurrentUser, useModal } from '@md-shared/hooks'
+import { useCurrentUser, useReduxModal } from '@md-shared/hooks'
 // components
 import { View } from 'react-native'
 import { ConfirmNavigationModal } from './components/confirm-navigation-modal'
@@ -9,9 +9,9 @@ import { UserCard, NavigationButton } from '@md-modules/home/shared/components'
 import { CONFIRM_NAV_MODAL } from '@md-shared/constants/modal'
 
 const User = () => {
-  const user = useCurrentUser()
+  const { user } = useCurrentUser()
 
-  const { openModal } = useModal(CONFIRM_NAV_MODAL)
+  const { openModal } = useReduxModal({ modalType: CONFIRM_NAV_MODAL })
 
   const goToSettings = () => openModal()
 

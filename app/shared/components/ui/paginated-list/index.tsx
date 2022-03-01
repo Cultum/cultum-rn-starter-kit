@@ -3,10 +3,8 @@ import * as React from 'react'
 import { useIsFocused } from '@react-navigation/native'
 // components
 import { Loader, Text } from '@md-shared/components'
-import { FlatList, FlatListProps, RefreshControl } from 'react-native'
+import { FlatList, FlatListProps } from 'react-native'
 // other
-import { theme } from '@md-shared/theme'
-import { palette } from '@md-shared/theme/palette'
 // views
 import { LoaderWrapper, EmptyPlaceholder } from './views'
 // utils
@@ -19,7 +17,6 @@ export interface FlatListPropsExt<T> extends FlatListProps<T> {
   dataCount?: number
   isLoading: boolean
   resetList?: boolean
-  isLoadMore: boolean
   emptyDataMsg?: string
   useRefreshControl?: boolean
   listHeaderComponent?: React.ReactElement
@@ -35,15 +32,11 @@ const ListLoader = () => (
 
 const PaginatedList = <T extends Record<string, unknown>>({
   data,
-  perPage = 6,
   loadData,
   dataCount = 0,
   resetList = false,
   isLoading,
-  isLoadMore,
   emptyDataMsg = 'No data found!',
-  useRefreshControl = true,
-  listHeaderComponent,
   ...rest
 }: FlatListPropsExt<T>) => {
   const isFocused = useIsFocused()
@@ -51,24 +44,18 @@ const PaginatedList = <T extends Record<string, unknown>>({
   // state
   const [page, setPage] = React.useState(1)
   const [listData, setListData] = React.useState<T[]>([])
-  const [refreshing, setRefreshing] = React.useState(false)
 
   const listRef: React.MutableRefObject<FlatList | null> = React.useRef(null)
 
-  // effects
   React.useEffect(() => {
     if (isFocused) {
-      if (useRefreshControl && listData?.length && page === 1) {
-        setRefreshing(true)
-      }
-
-      loadData(page, page > 1).then(() => setRefreshing(false))
-    } else {
-      if (resetList) {
-        listRef.current?.scrollToOffset({ animated: false, offset: 0 })
-      }
+      loadData(page, page > 1)
     }
-  }, [page, perPage, isFocused])
+
+    if (!isFocused && resetList) {
+      listRef.current?.scrollToOffset({ animated: false, offset: 0 })
+    }
+  }, [page, isFocused])
 
   React.useEffect(() => {
     if (data) {
@@ -77,27 +64,15 @@ const PaginatedList = <T extends Record<string, unknown>>({
   }, [data])
 
   // methods
-  const onRefresh = React.useCallback(() => {
-    if (page > 1) {
-      setPage(1)
-    } else {
-      setRefreshing(true)
-      loadData(1).then(() => setRefreshing(false))
-    }
-  }, [page])
 
   const loadMoreData = () => {
-    if (listData?.length >= perPage && listData?.length < dataCount && !isLoadMore) {
+    if (listData?.length < dataCount && !isLoading) {
       setPage((prev) => prev + 1)
     }
   }
 
   const renderListHeader = React.useCallback(() => {
-    if (listHeaderComponent) {
-      return listHeaderComponent
-    }
-
-    if (!listData?.length && isLoading && !refreshing) {
+    if (!listData?.length && isLoading) {
       return <ListLoader />
     }
 
@@ -105,12 +80,12 @@ const PaginatedList = <T extends Record<string, unknown>>({
   }, [isLoading])
 
   const renderListFooter = React.useCallback(() => {
-    if (isLoadMore) {
+    if (!!listData?.length && isLoading) {
       return <ListLoader />
     }
 
     return null
-  }, [isLoadMore])
+  }, [listData, isLoading])
 
   const renderListEmpty = React.useCallback(() => {
     if (!listData.length && !isLoading) {
@@ -129,6 +104,7 @@ const PaginatedList = <T extends Record<string, unknown>>({
   return React.useMemo(
     () => (
       <FlatList
+        {...rest}
         ref={listRef}
         data={listData}
         onEndReachedThreshold={0}
@@ -139,20 +115,9 @@ const PaginatedList = <T extends Record<string, unknown>>({
         ListFooterComponent={renderListFooter}
         ListHeaderComponent={renderListHeader}
         contentContainerStyle={FLAT_LIST_STYLE}
-        refreshControl={
-          useRefreshControl ? (
-            <RefreshControl
-              onRefresh={onRefresh}
-              refreshing={refreshing}
-              tintColor={palette.blue300}
-              colors={[theme.color.primary]}
-            />
-          ) : undefined
-        }
-        {...rest}
       />
     ),
-    [listData, isLoading, isLoadMore, refreshing, useRefreshControl],
+    [listData, isLoading],
   )
 }
 

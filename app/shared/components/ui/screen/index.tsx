@@ -35,7 +35,7 @@ const ScreenWithoutScrolling: React.FC<Props> = (props) => {
       behavior={isIos ? 'padding' : undefined}
       keyboardVerticalOffset={offsets[props.keyboardOffset || 'none']}
     >
-      <StatusBar barStyle={props.statusBar || 'light-content'} />
+      <StatusBar barStyle={props.statusBar || 'dark-content'} />
       <View style={[preset.inner, style, insetStyle]}>
         <ToastNotification top={TOAST_TOP_MARGIN} />
         {props.children}
@@ -60,7 +60,7 @@ const ScreenWithScrolling: React.FC<Props> = (props) => {
       behavior={isIos ? 'padding' : undefined}
       keyboardVerticalOffset={offsets[props.keyboardOffset || 'none']}
     >
-      <StatusBar barStyle={props.statusBar || 'light-content'} />
+      <StatusBar barStyle={props.statusBar || 'dark-content'} />
       <View style={[preset.outer, backgroundStyle, insetStyle]}>
         <ToastNotification top={TOAST_TOP_MARGIN} />
         <ScrollView style={[preset.outer, backgroundStyle]} contentContainerStyle={[preset.inner, style]}>

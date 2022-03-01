@@ -7,27 +7,16 @@ import { Keyboard, TouchableWithoutFeedback } from 'react-native'
 // hooks
 import { useForm } from 'react-hook-form'
 import { useToast } from '@md-shared/hooks'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@md-store'
 // components
 import { AuthRedirect } from '@md-modules/auth/shared/components/auth-redirect'
 import { Button, Text, FormInput } from '@md-shared/components'
-// helpers
-import {
-  ClientError,
-  RequestError,
-  ClientSuccess,
-  isClientError,
-  isClientSuccess,
-  getRequestErrorMessage,
-} from '@md-shared/services/api'
 // store
-import * as API from '@md-store/modules/api'
-import { setAuthorizedAction, setUserAction } from '@md-store/modules/profile'
-// storage
+import { setAuthorized, setUser } from '@md-store/modules/user'
+// utils
 import { storageManager } from '@md-shared/utils/storage'
-// types
-import { ThunkDispatch } from '@md-store/helpers'
-import { LogInResponse, SignUpResponse } from '@md-shared/services/api/controllers'
+// api
+import { LogInResponse, SignUpResponse, useLazyGetUserQuery } from '@md-store/middlewares/api/endpoints'
 
 // styled
 const Wrapper = styled.View`
@@ -45,7 +34,7 @@ interface Props {
   isSignUp?: boolean
   isLoading: boolean
   onNavButtonPress: () => void
-  onFormSubmit: (data: FormInputs) => Promise<ClientSuccess<SignUpResponse | LogInResponse> | ClientError<RequestError>>
+  onFormSubmit: (data: FormInputs) => Promise<SignUpResponse> | Promise<LogInResponse>
 }
 
 interface FormInputs {
@@ -55,14 +44,16 @@ interface FormInputs {
 
 // validation
 const schema = yup.object().shape({
-  email: yup.string().required('Required').nullable().email('E-mail isn\'t valid'),
+  email: yup.string().required('Required').nullable().email("E-mail isn't valid"),
   password: yup.string().min(6, 'Min length 6 characters').required('Required'),
 })
 
 const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNavButtonPress }) => {
-  const dispatch = useDispatch<ThunkDispatch>()
+  const dispatch = useAppDispatch()
 
   const { openToast } = useToast()
+
+  const [getUser] = useLazyGetUserQuery()
 
   const { control, handleSubmit } = useForm<FormInputs>({
     resolver: yupResolver(schema),
@@ -70,28 +61,43 @@ const Auth: React.FC<Props> = ({ isSignUp = false, isLoading, onFormSubmit, onNa
 
   const onSubmit = async (data: FormInputs) => {
     Keyboard.dismiss()
+    try {
+      const res = await onFormSubmit({ password: data.password, email: 'byron.fields@reqres.in' })
 
-    const res = await onFormSubmit({ password: data.password, email: 'byron.fields@reqres.in' })
+      if (res) {
+        let userId = '9'
 
-    if (isClientSuccess(res)) {
-      const { token } = res.data
+        if ('id' in res.data) {
+          userId = res.data?.id
+        }
 
-      const userId = res.data?.id || '9'
-      const userRes = await dispatch(API.user.getUser.performAPIGetUser({ id: userId }))
+        const userRes = await getUser({ id: userId })
 
-      if (isClientSuccess(userRes)) {
-        dispatch(setUserAction(userRes.data.data))
+        if (userRes.data) {
+          dispatch(setUser(userRes.data))
+        }
+
+        await storageManager.setAuthToken(res.data.token)
+        dispatch(setAuthorized(Boolean(res.data.token)))
       }
 
-      await storageManager.setAuthToken(token)
-      dispatch(setAuthorizedAction(Boolean(token)))
-    }
-
-    if (isClientError(res)) {
+      // TODO: add error types
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (res.error) {
+        openToast({
+          type: 'ERROR',
+          preset: 'TEMPORARY',
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          message: res.error.data.error,
+        })
+      }
+    } catch (e) {
       openToast({
         type: 'ERROR',
         preset: 'TEMPORARY',
-        message: getRequestErrorMessage(res.error),
+        message: e.message,
       })
     }
   }

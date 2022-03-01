@@ -1,16 +1,11 @@
 import { combineReducers } from 'redux'
 // local
-import * as toast from './toast'
-import * as modal from './modal'
+import toastReducer from './toast'
+import modalReducer from './modal'
 
-export type UIReducers = {
-  toast: toast.InitialState
-  modal: modal.InitialState
-}
-
-export const uiReducers = combineReducers<UIReducers>({
-  toast: toast.reducer,
-  modal: modal.reducer,
+const uiReducers = combineReducers({
+  toast: toastReducer,
+  modal: modalReducer,
 })
 
-export { toast, modal }
+export default uiReducers

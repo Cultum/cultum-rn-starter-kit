@@ -12,7 +12,9 @@ import { View } from 'react-native'
 import { Button, Text } from '@md-shared/components/ui'
 import { FormInput, FromSelect } from '@md-shared/components'
 // store
-import { updateProfileAction } from '@md-store/modules/profile'
+import { updateUser } from '@md-store/modules/user'
+// types
+import { User } from '@md-shared/types/entities'
 // utils
 import { omit } from 'lodash'
 import { delay } from '@md-shared/utils/delay'
@@ -51,12 +53,13 @@ interface FormInputs {
 const schema = yup.object().shape({
   first_name: yup.string().required('Required'),
   last_name: yup.string().required('Required'),
-  email: yup.string().required('Required').nullable().email('E-mail isn\'t valid'),
+  email: yup.string().required('Required').nullable().email("E-mail isn't valid"),
   job: yup.string().required('Required'),
 })
 
 const Settings = () => {
-  const user = useCurrentUser()
+  const { user } = useCurrentUser()
+
   const dispatch = useDispatch()
 
   const { openToast } = useToast()
@@ -71,7 +74,7 @@ const Settings = () => {
   const onFormSubmit = (data: FormInputs) => {
     setLoading(true)
     delay(1000).then(() => {
-      dispatch(updateProfileAction(data))
+      dispatch(updateUser(data as User))
       setLoading(false)
 
       openToast({

@@ -6,4 +6,5 @@ export type User = {
   // eslint-disable-next-line camelcase
   last_name: string
   avatar: string
+  job?: string
 }

@@ -1,20 +1,27 @@
-import { combineReducers } from 'redux'
-// shapes
-import { UIReducers } from './ui'
-import { ApiReducers } from './api'
-import { InitialState as AppState } from './app'
-import { InitialState as ProfileState } from './profile'
+import { Reducer, combineReducers } from 'redux'
+// reducers
+import uiReducers from './ui'
+import userReducer from './user'
+// api
+import { api } from '@md-store/middlewares/api'
+// store
+import { RESET_STATE_ACTION_TYPE } from '@md-store/middlewares/unauthenticated'
 
-export type RootStore = {
-  ui: UIReducers
-  app: AppState
-  api: ApiReducers
-  profile: ProfileState
+export const combinedReducer = combineReducers({
+  ui: uiReducers,
+  user: userReducer,
+  [api.reducerPath]: api.reducer,
+})
+
+export const rootReducer: Reducer<RootState> = (
+  state,
+  action,
+) => {
+  if (action.type === RESET_STATE_ACTION_TYPE) {
+    state = {} as RootState
+  }
+
+  return combinedReducer(state, action)
 }
 
-export const rootReducer = combineReducers<RootStore>({
-  ui: require('./ui').uiReducers,
-  app: require('./app').reducer,
-  api: require('./api').apiReducers,
-  profile: require('./profile').reducer,
-})
+export type RootState = ReturnType<typeof combinedReducer>;

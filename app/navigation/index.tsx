@@ -3,30 +3,22 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 // hooks
-import { useSelector } from 'react-redux'
+import { useCurrentUser } from '@md-shared/hooks'
 // constants
 import { ROUTES, RootParamList } from './constants'
 // components
 import { BottomTabMenu } from '@md-navigation/bottom-tab-menu'
 // screens
 import { LogInScreen, SignUpScreen, UserDetailsScreen } from '@md-screens'
-// types
-import { RootStore } from '@md-store/modules'
 
 const Stack = createNativeStackNavigator<RootParamList>()
 
-interface StoreProfileSelector {
-  isAuthorized: RootStore['profile']['authorized']
-}
-
 const RootStack = () => {
-  const { isAuthorized } = useSelector<RootStore, StoreProfileSelector>((state) => ({
-    isAuthorized: state.profile.authorized,
-  }))
+  const user = useCurrentUser()
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isAuthorized ? (
+      {user.authorized ? (
         <Stack.Group>
           <Stack.Screen name={ROUTES.root.ROOT_STACK} component={BottomTabMenu} />
           <Stack.Screen name={ROUTES.home.DETAILS} component={UserDetailsScreen} />

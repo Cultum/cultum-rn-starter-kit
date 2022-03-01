@@ -1,34 +1,23 @@
-import * as React from 'react'
-// types
-import { RootStore } from '@md-store/modules'
-// hooks
-import { useDispatch, useSelector } from 'react-redux'
 // store
-import { OpenToastParams, resetToastAction, setOpenToastAction, setHideToastAction } from '@md-store/modules/ui/toast'
+import {
+  OpenToastParams,
+  hideToast as hide,
+  openToast as open,
+  resetToast,
+  toastSelector,
+} from '@md-store/modules/ui/toast'
+import { useAppDispatch, useAppSelector } from '@md-store'
 
 const useToast = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const toastData = useSelector<RootStore, RootStore['ui']['toast']>((state) => state.ui.toast)
+  const toastData = useAppSelector(toastSelector)
 
-  const openToast = React.useCallback(
-    (params: OpenToastParams) => {
-      dispatch(setOpenToastAction(params))
-    },
-    [dispatch],
-  )
-
-  const hideToast = React.useCallback(() => {
-    dispatch(setHideToastAction())
-  }, [dispatch])
-
-  const resetToastData = React.useCallback(() => {
-    dispatch(resetToastAction())
-  }, [dispatch])
+  const openToast = (params: OpenToastParams) => dispatch(open(params))
+  const hideToast = () => dispatch(hide())
+  const resetToastData = () => dispatch(resetToast())
 
   return { openToast, hideToast, toastData, resetToastData }
 }
-
-export type ToastActions = ReturnType<typeof useToast>
 
 export { useToast }

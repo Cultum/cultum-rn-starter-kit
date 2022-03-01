@@ -1,64 +1,50 @@
+// libs
+import { AppState } from '@md-store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // constants
 import * as modalTypes from '@md-shared/constants/modal'
-// types
-import { ModalType } from '@md-shared/hooks'
-// helpers
-import { createAction } from '@md-store/helpers'
 // utils
-import { keys } from 'lodash'
+import keys from 'lodash/keys'
 
-/* ------------- Types ------------- */
+type Modal = { isOpen: boolean, modalData?: Record<string, unknown> }
 
-export const OPEN_MODAL = '@ui/modal/OPEN_MODAl'
-export const CLOSE_MODAL = '@ui/modal/CLOSE_MODAL'
-
-/* ------------- Types and Action Creators ------------- */
-
-export const setOpenModalAction = createAction<typeof OPEN_MODAL, { modalType: ModalType; modalData?: unknown }>(
-  OPEN_MODAL,
-)
-export type SetOpenModalAction = ReturnType<typeof setOpenModalAction>
-
-export const setCloseModalAction = createAction<typeof CLOSE_MODAL, { modalType: ModalType }>(CLOSE_MODAL)
-export type SetCloseModalAction = ReturnType<typeof setCloseModalAction>
-
-type Actions = SetOpenModalAction | SetCloseModalAction
-
-/* ------------- Initial State ------------- */
-
-export type InitialState = {
-  [key: string]: { open: boolean; data: any }
+interface ModalState {
+  [key: string]: Modal
 }
 
-export const INITIAL_STATE: InitialState = keys(modalTypes).reduce(
+const initialState: ModalState = keys(modalTypes).reduce(
   (o, key) => ({
     ...o,
-    [key]: { open: false, modalData: {} },
+    [key]: { isOpen: false },
   }),
   {},
 )
 
-/* ------------- Hookup Reducers To Types ------------- */
+export const modalSlice = createSlice({
+  name: 'modal',
+  initialState,
+  reducers: {
+    openModal: (state, action: PayloadAction<{ modalType: string, modalData?: Record<string, unknown> }>) => ({
+      ...state,
+      [action.payload.modalType]: {
+        isOpen: true,
+        ...(action.payload.modalData && { modalData: action.payload.modalData }),
+      },
+    }),
+    closeModal: (state, action: PayloadAction<{ modalType: string }>) => ({
+      ...state,
+      [action.payload.modalType]: { isOpen: false, modalData: {} },
+    }),
+  },
+})
 
-export function reducer(state = INITIAL_STATE, action: Actions): InitialState {
-  switch (action.type) {
-    case OPEN_MODAL:
-      return {
-        ...state,
-        [action.payload.modalType]: {
-          data: action.payload.modalData,
-          open: true,
-        },
-      }
-    case CLOSE_MODAL:
-      return {
-        ...state,
-        [action.payload.modalType]: {
-          data: {},
-          open: false,
-        },
-      }
-    default:
-      return state
-  }
-}
+export const {
+  openModal,
+  closeModal,
+} = modalSlice.actions
+
+export const modalSelector = (state: AppState, modalType: string) => state.ui.modal[modalType]
+
+export default modalSlice.reducer
+
+

@@ -1,30 +1,44 @@
 // libs
-import { persistReducer } from 'redux-persist'
-import { AnyAction, Reducer, CombinedState } from 'redux'
-// local
-import { rootReducer } from './modules'
-import configureStore from './create-store'
-import ReduxPersist from './redux-persist'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
+// reducers
+import { rootReducer } from '@md-store/modules'
+// middlewares
+import { api } from '@md-store/middlewares/api'
 
-/* ------------- Assemble The Reducers ------------- */
-export default () => {
-  let finalReducers: Reducer<CombinedState<any>, AnyAction> = rootReducer
-  // If rehydration is on use persistReducer otherwise default combineReducers
-  if (ReduxPersist.active) {
-    const persistConfig = ReduxPersist.storeConfig
-
-    finalReducers = persistReducer(persistConfig, rootReducer)
-  }
-
-  const { store } = configureStore(finalReducers)
-
-  if (module?.hot) {
-    module.hot.accept(() => {
-      const nextRootReducer = require('./modules').rootReducer
-
-      store.replaceReducer(nextRootReducer)
-    })
-  }
-
-  return store
+const persistConfig = {
+  key: 'root',
+  version: 1.0,
+  storage: AsyncStorage,
+  whitelist: ['user'],
 }
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const store = configureStore({
+  devTools: __DEV__,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(api.middleware),
+})
+
+setupListeners(store.dispatch)
+
+const persistor = persistStore(store)
+
+export { store, persistor }
+
+// types
+export type AppState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action<string>>
+
+export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector

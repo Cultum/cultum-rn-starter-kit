@@ -1,11 +1,14 @@
 // hooks
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@md-store'
+// store
+import { userSelector } from '@md-store/modules/user'
 // types
 import { User } from '@md-shared/types/entities'
-import { RootStore } from '@md-store/modules'
 
 const useCurrentUser = () => {
-  return useSelector<RootStore, RootStore['profile']['user']>((state) => state.profile.user) as User
+  const { data, authorized } = useAppSelector(userSelector)
+
+  return { user: data as User, authorized }
 }
 
 export { useCurrentUser }

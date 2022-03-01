@@ -4,7 +4,6 @@ import styled from 'styled-components/native'
 // components
 import { Avatar, Text } from '@md-shared/components'
 import { TouchableWithoutFeedback } from 'react-native'
-
 // types
 import { User } from '@md-shared/types/entities'
 
@@ -44,4 +43,6 @@ const UserCard: React.FC<Props> = ({ user, onCardPress }) => {
   )
 }
 
-export { UserCard }
+const memoized = React.memo(UserCard)
+
+export { memoized as UserCard }

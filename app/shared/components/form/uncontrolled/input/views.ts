@@ -23,7 +23,7 @@ export const TextInput = styled.TextInput<{
   color: ${({ theme, isValid }) => (isValid ? theme.color.palette.gray800 : theme.color.palette.red500)};
   flex: 1;
   font-size: ${({ theme, inputStyle }) => inputStyle?.fs ?? theme.spacing[4]}px;
-  padding: ${({ theme }) => theme.spacing[4]}px;
+  padding: ${({ theme }) => theme.spacing[3]}px;
 
   ${({ withIcon }) => withIcon && 'padding-right: 40px'};
 `
